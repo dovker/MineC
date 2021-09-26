@@ -1,0 +1,6 @@
+[submodule "MineC/thirdparty/SDL"]
+	path = MineC/thirdparty/SDL
+	url = https://github.com/libsdl-org/SDL.git
+[submodule "MineC/thirdparty/cglm"]
+	path = MineC/thirdparty/cglm
+	url = https://github.com/recp/cglm.git
