@@ -22,7 +22,7 @@ typedef _Bool b8;
 
 #include <assert.h>
 // Properly define static assertions.
-#ifdef __gcc__
+#if defined(__gcc__) || defined(__clang__)
 #define STATIC_ASSERT _Static_assert
 #else
 #define STATIC_ASSERT static_assert
@@ -44,3 +44,8 @@ STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 bytes.");
 
 #define true 1
 #define false 0
+
+#include <stdio.h>
+
+#define MC_LOG(...) printf(__VA_ARGS__)
+#define MC_ASSERT(x, ...) if(!x) { printf(__VA_ARGS__); }

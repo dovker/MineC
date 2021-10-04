@@ -1,136 +1,93 @@
-#define SDL_MAIN_HANDLED
-#include "SDL.h"
-#include "glad/glad.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "Engine/defines.h"
+#include "Engine/Window/window.h"
+
+#include "Engine/Containers/dynamic_array.h"
+
+#include "Engine/Graphics/API.h"
+#include "Engine/Graphics/buffer.h"
+#include "Engine/Graphics/vertex_array.h"
+#include "Engine/Graphics/shader.h"
+
+#include "cglm/cglm.h"
+#include "cglm/cam.h"
+
+typedef struct MC_Uniform
+{
+    mat4 projection;
+    mat4 view;
+} MC_Uniform;
 
 int main() {
+        
+    McWindow window;
+    window_create(&window, "Haha Poggers", 800, 600);
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("SDL2 video subsystem couldn't be initialized. Error: %s\n", SDL_GetError());
-        exit(1);
-    }
-    printf("HELOW!");
-    SDL_Window* window = SDL_CreateWindow("Glad Sample",
-                                          SDL_WINDOWPOS_CENTERED,
-                                          SDL_WINDOWPOS_CENTERED,
-                                          800, 600, SDL_WINDOW_SHOWN |
-                                          SDL_WINDOW_OPENGL);
-
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
-                                                SDL_RENDERER_ACCELERATED);
-
-    if (renderer == NULL) {
-        printf("SDL2 Renderer couldn't be created. Error: %s\n");
-        exit(1);
-    }
-
-    // Create a OpenGL context on SDL2
-    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
-
-    // Load GL extensions using glad
-    if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
-        printf("Failed to initialize the OpenGL context.");
-        exit(1);
-    }
-
-    // Loaded OpenGL successfully.
-    printf("OpenGL version loaded: %d.%d\n", GLVersion.major, GLVersion.minor);
-
-    // Create an event handler
-    SDL_Event event;
-    // Loop condition
-    b8 running = true;
+    graphics_init();
 
     f32 vertices[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
         0.0f,  0.5f, 0.0f
     }; 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
+    u32 indices[] =
+    {
+        0, 1, 2
+    };
 
-    glBindVertexArray(VAO);
+    VertexBuffer vert_buffer;
+    vertex_buffer_create(&vert_buffer, vertices, sizeof(vertices));
+    vertex_buffer_set_layout(&vert_buffer, buffer_layout_create(1, MC_FLOAT3));
+    
+    IndexBuffer ind_buffer;
+    index_buffer_create(&ind_buffer, indices, 3);
 
-    u32 VBO;
-    glGenBuffers(1, &VBO);
+    VertexArray vert_array;
+    vertex_array_create(&vert_array);
+    vertex_array_add_vertex_buffer(&vert_array, &vert_buffer);
+    vertex_array_add_index_buffer(&vert_array, &ind_buffer);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);  
+    UniformBuffer uniformBuffer;
+    uniform_buffer_create(&uniformBuffer, sizeof(MC_Uniform), 0);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    Shader shader;
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    shader_create(&shader, "../../MineC/shaders/main.glsl");
+    shader_set_uniform_buffer_binding(&shader, &uniformBuffer, "Camera");
 
+    vec3 up = { 0.0f, 1.0f, 0.0f };
 
-    const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
+    vec3 camPos = { 0.0f, 0.0f, 1.0f };
+    vec3 camTarget = { 0.0f, 0.0f, 0.0f };
 
-    u32 vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    MC_Uniform uniform;
 
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
+    glm_lookat(camPos, camTarget, up, uniform.view);
+    glm_perspective(glm_rad(60.0f), 800.0f/600.0f, 0.01f, 1000.0f, uniform.projection);
 
-    u32 fragmentShader;
-    const char* fragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "} \n";
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
+    uniform_buffer_set_data(&uniformBuffer, &uniform, sizeof(MC_Uniform), 0);
 
-    u32 shaderProgram;
-    shaderProgram = glCreateProgram();
+    while (window.running) {
+        
+        graphics_set_clear_color(0.2f, 0.3f, 0.3f, 1.0f);
+        graphics_clear();
 
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
+        shader_bind(&shader);
+        vertex_array_bind(&vert_array);
+        graphics_draw_indexed(&vert_array);
 
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    while (running) {
-        SDL_PollEvent(&event);
-
-        switch(event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-
-        case SDL_KEYDOWN:
-            switch(event.key.keysym.sym) {
-            case SDLK_ESCAPE:
-                running = false;
-                break;
-            }
-        }
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        SDL_GL_SwapWindow(window);
+        window_update(&window);
     }
 
-    // Destroy everything to not leak memory.
-    SDL_GL_DeleteContext(gl_context);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    vertex_buffer_delete(&vert_buffer);
+    index_buffer_delete(&ind_buffer);
+    vertex_array_delete(&vert_array);
+    shader_delete(&shader);
+    uniform_buffer_delete(&uniformBuffer);
 
-    SDL_Quit();
-
+    window_destroy(&window);
+    
     return 0;
 }

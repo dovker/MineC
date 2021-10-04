@@ -16,6 +16,8 @@ target_include_directories(MineC PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
                                 PUBLIC ${MC_INCLUDE_DIRS})
 
 add_compile_definitions(_CRT_SCURE_NO_WARNINGS)
+add_compile_definitions(MC_USE_OPENGL MC_USE_SDL2 MC_DEBUG)
+# IF YOU CAN SUPPORT OPENGL4.5, DEFINE MC_OPENGL_4_5
 
 target_link_directories(MineC PRIVATE ${MC_LINK_DIRS})
 
