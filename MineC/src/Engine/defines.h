@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Unsigned int types.
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -21,12 +25,41 @@ typedef int b32;
 typedef _Bool b8;
 
 #include <assert.h>
-// Properly define static assertions.
+
 #if defined(__gcc__) || defined(__clang__)
 #define STATIC_ASSERT _Static_assert
 #else
 #define STATIC_ASSERT static_assert
 #endif
+
+#ifdef _WIN32
+	/* Windows x64/x86 */
+	#ifdef _WIN64
+		/* Windows x64  */
+		#define MC_PLATFORM_WINDOWS
+	#else
+		/* Windows x86 */
+		#error "x86 Builds are not supported!"
+	#endif
+#elif defined(__APPLE__) || defined(__MACH__)
+	#include <TargetConditionals.h>
+	#if TARGET_IPHONE_SIMULATOR == 1
+		#error "IOS simulator is not supported!"
+	#elif TARGET_OS_IPHONE == 1
+		#define MC_PLATFORM_IOS
+	#elif TARGET_OS_MAC == 1
+		#define MC_PLATFORM_MACOS
+	#else
+		#error "Unknown Apple platform!"
+	#endif
+#elif defined(__ANDROID__)
+	#define MC_PLATFORM_ANDROID
+#elif defined(__linux__)
+	#define MC_PLATFORM_LINUX
+#else
+	#error "Unknown platform!"
+#endif
+
 
 // Ensure all types are of the correct size.
 STATIC_ASSERT(sizeof(u8) == 1, "Expected u8 to be 1 byte.");
@@ -49,3 +82,7 @@ STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 bytes.");
 
 #define MC_LOG(...) printf(__VA_ARGS__)
 #define MC_ASSERT(x, ...) if(!x) { printf(__VA_ARGS__); }
+
+#ifdef __cplusplus
+}
+#endif

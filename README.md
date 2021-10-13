@@ -1,4 +1,4 @@
 # MineC
 
 BUILD:
-`cmake ../ -DCGLM_SHARED=OFF -DCGLM_STATIC=ON -DSDL_SENSORS:BOOL=OFF -DLIBC=ON -G "Visual Studio 16 2019" -A x64 ../"`
+`cmake ../ -G "Visual Studio 16 2019" -A x64 ../"`

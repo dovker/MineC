@@ -83,7 +83,7 @@ char* _concat_strings(const char* s1, const char* s2)
     MC_ASSERT(concatenatedString, "FAILED TO ALLOCTE MEMORY WHEN CONCATENATING STRINGS");
 
     strcpy(concatenatedString, s1);
-    strcat(concatenatedString, s2, len2);
+    strcat(concatenatedString, s2);
 
     return concatenatedString;
 }

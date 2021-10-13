@@ -20,6 +20,7 @@ void window_create(McWindow *window, const char* title, u32 width, u32 height)
         printf("SDL2 video subsystem couldn't be initialized. Error: %s\n", SDL_GetError());
         exit(1);
     }
+    _force_modern_api();
 
     window->window_handle = SDL_CreateWindow(title,
                                           SDL_WINDOWPOS_CENTERED,

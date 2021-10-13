@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Engine/Graphics/vertex_array.h"
 #include "Engine/Graphics/graphics_common.h"
 
@@ -16,3 +20,7 @@ void graphics_clear();
 
 void graphics_draw_indexed(VertexArray* array);
 void graphics_draw_indexed_count(VertexArray* array, u32 index_count);
+
+#ifdef __cplusplus
+}
+#endif

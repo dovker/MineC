@@ -1,4 +1,9 @@
 #pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Engine/defines.h"
 #include "Engine/Graphics/buffer.h"
 #include "Engine/Containers/dynamic_array.h"
@@ -20,3 +25,7 @@ DynamicArray vertex_array_get_vertex_buffers(VertexArray *array);
 
 void vertex_array_bind(VertexArray *array);
 void vertex_array_unbind(VertexArray *array);
+
+#ifdef __cplusplus
+}
+#endif

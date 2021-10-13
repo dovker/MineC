@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Engine/defines.h"
 
 #define MC_MAX_BUFFERELEMENT_COUNT 8
@@ -51,3 +55,7 @@ typedef enum McShaderType
     MC_SHADER_GEOMETRY,
     MC_SHADER_COMPUTE
 } McShaderType;
+
+#ifdef __cplusplus
+}
+#endif

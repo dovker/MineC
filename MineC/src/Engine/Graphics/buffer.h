@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Engine/defines.h"
 #include "Engine/Graphics/graphics_common.h"
 
@@ -23,3 +27,7 @@ void index_buffer_create(IndexBuffer* buffer, u32* indices, u32 count);
 void index_buffer_delete(IndexBuffer* buffer); //DOESN'T FREE THE MEMORY
 void index_buffer_bind(IndexBuffer* buffer);
 void index_buffer_unbind();
+
+#ifdef __cplusplus
+}
+#endif

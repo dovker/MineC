@@ -2,6 +2,10 @@
 
 #ifdef MC_USE_OPENGL
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Engine/defines.h"
 #include "Engine/Containers/dynamic_array.h"
 #include "Engine/Graphics/graphics_common.h"
@@ -36,5 +40,9 @@ typedef struct UniformBuffer
     u32 id;
     u32 binding;
 } UniformBuffer;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

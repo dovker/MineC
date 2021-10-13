@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 
 #include "Engine/defines.h"
@@ -67,3 +71,7 @@ void _reallocate_dynamic_array(DynamicArray* array, size_t size);
 // MC_LOG("Count: %d\n", vec.count); //PRINTS 1
 
 // dynamic_array_free(&vec); //deallocates data pointer
+
+#ifdef __cplusplus
+}
+#endif

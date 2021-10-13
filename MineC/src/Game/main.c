@@ -10,6 +10,7 @@
 #include "Engine/Graphics/buffer.h"
 #include "Engine/Graphics/vertex_array.h"
 #include "Engine/Graphics/shader.h"
+#include "Engine/Graphics/uniform_buffer.h"
 
 #include "cglm/cglm.h"
 #include "cglm/cam.h"

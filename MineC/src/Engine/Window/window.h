@@ -1,4 +1,9 @@
 #pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Engine/defines.h"
 
 typedef struct McWindow
@@ -25,3 +30,8 @@ void _create_graphics_context(McWindow *window);
 void _destroy_graphics_context(McWindow *window);
 void _set_graphics_swap_interval(b8 toggle);
 void _swap_graphics_buffers(McWindow *window);
+void _force_modern_api();
+
+#ifdef __cplusplus
+}
+#endif
